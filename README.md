@@ -274,33 +274,7 @@ Sin memoria: si la naranja sale del encuadre (por ejemplo al girar hacia la taza
 
 ---
 
-## 10. Problemas frecuentes
-
-| Síntoma | Causa | Solución |
-|---|---|---|
-| `can't open camera by index` | Índice equivocado (`1` es metadatos) o el usuario no está en el grupo `video` | `--source 2`; `sudo usermod -aG video $USER` |
-| La app de cámara se ve en negro | Nodo de metadatos o falla de PipeWire | Probar con `ffplay -f v4l2 /dev/video2` |
-| No detecta las clases del proyecto | Se está usando `yolov8n.pt` (modelo COCO genérico) | Usar `yolo/model/best.pt` |
-| `package 'yolo_bridge' not found` | Contenedor creado con `docker run` a mano (sin montajes) o sin `catkin_make` | Levantar con `./scripts/run_container.sh`, entrar con `./scripts/enter.sh`, y `catkin_make` |
-| `No ROSARIA source found` | Falta clonar el workspace | `./scripts/prepare_workspace.sh` |
-| `Could not contact ROS master` | No hay `roscore` | Usar `roslaunch` (lo levanta solo) o correr `roscore` |
-| El puerto 5005 está ocupado | Quedó otro `udp_bridge` o `udp_test_listener` abierto | Cerrarlo |
-| `/dev/ttyUSB0` aparece y desaparece | `brltty` toma el puerto | `sudo apt remove brltty` |
-| Aviso `XDG_SESSION_TYPE=wayland` | Qt usa XWayland | No es un problema; se puede ignorar |
-
-Más problemas de Docker: [`docs/DOCKER.md`](docs/DOCKER.md#11-problemas-frecuentes).
-
----
-
-## 11. Pendientes
-
-1. **Memoria corta de la naranja:** si la naranja sale del encuadre al girar hacia la taza, hoy se olvida de inmediato. Recordarla durante ~1 s evitaría que el robot avance hacia ella sin verla.
-2. Ajustar `k_lin`, `k_ang` y las velocidades con el robot en el suelo.
-3. Abrir la cámara en el emisor con `cv2.CAP_V4L2` y pedir MJPG explícitamente.
-
----
-
-## 12. Créditos
+## 10. Créditos
 
 - Entorno Docker basado en el bundle `pioneer_p3dx_docker_bundle.zip` de Samuel Bugueño.
 - Workspace ROS del Laboratorio de Visión Computacional, DIE, Universidad de Chile: [`Uchile-Lab-Vision-Computacional/pioneer_ws`](https://github.com/Uchile-Lab-Vision-Computacional/pioneer_ws).
