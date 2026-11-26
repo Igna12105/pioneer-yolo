@@ -1,0 +1,45 @@
+services:
+  pioneer:
+    image: pioneer-melodic:base
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pioneer_melodic
+    network_mode: host
+    # Se monta /dev completo y se autorizan solo ciertos tipos de dispositivo.
+    # Así el contenedor arranca aunque el Pioneer o la cámara no estén
+    # conectados, y los detecta si se enchufan después (sin --privileged).
+    #   188 = ttyUSB* (adaptador USB-serial del Pioneer)
+    #   166 = ttyACM*
+    #    81 = video4linux (/dev/video*, webcam)
+    #   226 = DRI (/dev/dri, aceleración OpenGL para RViz con la gráfica integrada)
+    volumes:
+      - "/dev:/dev"
+      - "${PIONEER_WS_HOST:-./pioneer_ws}:/root/pioneer_ws"
+      # Paquete del proyecto (versionado en este repo) dentro del workspace clonado
+      - "./ros/yolo_bridge:/root/pioneer_ws/src/yolo_bridge"
+      - "./data:/root/data"
+      - "./models:/root/.config/Ultralytics"
+      - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+      - "/tmp/.docker.xauth:/tmp/.docker.xauth:ro"
+    device_cgroup_rules:
+      - "c 188:* rmw"
+      - "c 166:* rmw"
+      - "c 81:* rmw"
+      - "c 226:* rmw"
+    group_add:
+      - video
+    environment:
+      DISPLAY: "${DISPLAY}"
+      XAUTHORITY: /tmp/.docker.xauth
+      QT_X11_NO_MITSHM: "1"
+      # Qt 5.9 de Melodic no tiene backend Wayland: se fuerza X11 (XWayland).
+      QT_QPA_PLATFORM: xcb
+      ROS_MASTER_URI: "${ROS_MASTER_URI:-http://127.0.0.1:11311}"
+      ROS_IP: "${ROS_IP:-127.0.0.1}"
+      PIONEER_DEVICE: "${PIONEER_DEVICE:-/dev/ttyUSB0}"
+      CAMERA_DEVICE: "${CAMERA_DEVICE:-/dev/video2}"
+    working_dir: /root/pioneer_ws
+    command: ["bash", "-lc", "sleep infinity"]
+    stdin_open: true
+    tty: true

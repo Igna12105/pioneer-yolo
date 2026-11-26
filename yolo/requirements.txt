@@ -1,0 +1,12 @@
+# Entorno del host para YOLO (emisor UDP, calibración y notebook de entrenamiento).
+# Probado con Python 3.11 en un entorno conda y GPU GTX 1650 (CUDA 12.1):
+#   conda create -n YOLOv8 python=3.11 -y && conda activate YOLOv8
+#   pip install -r yolo/requirements.txt
+# Sin GPU NVIDIA: quita la línea --extra-index-url y se instala torch para CPU.
+--extra-index-url https://download.pytorch.org/whl/cu121
+torch==2.4.1
+torchvision==0.19.1
+ultralytics==8.2.103
+opencv-python
+PyYAML
+roboflow==1.1.48   # solo para descargar el dataset desde el notebook

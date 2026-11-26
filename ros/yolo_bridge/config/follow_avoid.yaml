@@ -1,0 +1,44 @@
+# Parámetros del controlador follow/avoid.
+# Calibración: yolo/calibracion.yaml (20-11-2026, 640x480,
+# cámara montada en el robot). Si se mueve la cámara o cambia la resolución, recalibrar.
+
+enabled: true
+rate: 15.0              # Hz de publicación de cmd_vel
+msg_timeout: 0.5        # s sin /yolo/detection => frena (STALE)
+min_conf: 0.5           # detecciones con menos confianza se ignoran
+
+# --- Calibración de distancia: d = f_px * alto_m / (h * image_height) ---
+image_height: 480       # debe coincidir con --height del emisor y con la calibración
+follow_class_id: 1      # follow_obj (taza)
+avoid_class_id: 0       # avoid_obj (naranja)
+f_px_follow: 302.14
+f_px_avoid: 321.91
+height_follow_m: 0.10
+height_avoid_m: 0.08
+
+# --- Objetivos [m] (distancia cámara -> frente del objeto) ---
+d_target: 0.30          # se detiene a esta distancia de la taza
+d_deadband: 0.03        # ± tolerancia alrededor de d_target
+d_safe: 0.60            # retrocede si la naranja está más cerca que esto
+d_safe_hysteresis: 0.05 # deja de retroceder sobre d_safe + esto
+d_block: 0.80           # con taza visible y la naranja más cerca que esto: gira pero no avanza
+d_block_hysteresis: 0.05 # se desbloquea sobre d_block + esto
+
+# --- Control ---
+k_lin: 0.6              # [m/s por m de error]
+k_ang: 0.5              # [rad/s por unidad de cx]
+cx_deadband: 0.05       # no gira si |cx| < esto
+cx_slow: 0.5            # no avanza hacia la taza si |cx| >= esto (primero la centra)
+
+# --- Límites: modo LENTO para las primeras pruebas (subir de a poco) ---
+v_max: 0.10             # m/s hacia adelante
+v_back_max: 0.08        # m/s hacia atrás
+w_max: 0.30             # rad/s (~17 grados/s)
+lin_accel: 0.2          # m/s^2
+lin_decel: 0.8          # m/s^2 (frenado más rápido que la aceleración)
+ang_accel: 1.0          # rad/s^2
+ang_decel: 4.0          # rad/s^2
+
+# --- Filtro exponencial (1.0 = sin filtro, más bajo = más suave pero más lento) ---
+alpha_distance: 0.4
+alpha_cx: 0.5

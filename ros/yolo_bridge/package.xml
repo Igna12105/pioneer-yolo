@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>yolo_bridge</name>
+  <version>0.2.0</version>
+  <description>Puente UDP: detecciones YOLO (Python 3, host) hacia ROS Melodic, y controlador follow/avoid para el Pioneer</description>
+  <maintainer email="todo@todo.com">Ignacio</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>rosaria</exec_depend>
+</package>

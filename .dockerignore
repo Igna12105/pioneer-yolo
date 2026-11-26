@@ -1,0 +1,8 @@
+.git
+pioneer_ws/build
+pioneer_ws/devel
+pioneer_ws/.catkin_tools
+__pycache__
+*.pyc
+models
+data

@@ -1,0 +1,28 @@
+# --- Configuración local (puede tener datos propios de cada equipo) ---
+.env
+
+# --- Generado por scripts/prepare_workspace.sh y por el contenedor ---
+# pioneer_ws es un clon de Uchile-Lab-Vision-Computacional/pioneer_ws + rosaria;
+# nuestro paquete vive en ros/yolo_bridge y se monta dentro (docker-compose.yml).
+pioneer_ws/
+data/
+models/
+
+# --- YOLO: entrenamientos, datasets y resultados locales ---
+runs/
+datasets/
+yolov8n.pt
+*.avi
+*.mp4
+*.mov
+
+# --- Python / Jupyter ---
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# --- Editores / sistema ---
+.vscode/
+.idea/
+*.swp
+.DS_Store

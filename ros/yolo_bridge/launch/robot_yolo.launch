@@ -1,0 +1,43 @@
+<launch>
+  <!--
+    Lanza todo el lado ROS del proyecto:
+      RosAria (driver del Pioneer) + puente UDP (YOLO -> ROS) + controlador follow/avoid.
+
+    Ejemplos:
+      roslaunch yolo_bridge robot_yolo.launch                    # todo, robot real
+      roslaunch yolo_bridge robot_yolo.launch dry_run:=true      # NO mueve el robot: cmd_vel va a /cmd_vel_dry
+      roslaunch yolo_bridge robot_yolo.launch rosaria:=false     # sin driver (prueba sin robot)
+      roslaunch yolo_bridge robot_yolo.launch d_safe:=0.8 v_max:=0.15
+  -->
+  <arg name="port"     default="/dev/ttyUSB0"/>
+  <arg name="rosaria"  default="true"/>
+  <arg name="dry_run"  default="false"/>
+  <arg name="udp_port" default="5005"/>
+  <arg name="d_target" default="0.30"/>
+  <arg name="d_safe"   default="0.60"/>
+  <arg name="v_max"    default="0.10"/>
+  <arg name="w_max"    default="0.30"/>
+
+  <!-- Driver del robot: tópicos /RosAria/cmd_vel, /RosAria/pose, ... -->
+  <node if="$(arg rosaria)" pkg="rosaria" type="RosAria" name="RosAria" output="screen">
+    <param name="port" value="$(arg port)"/>
+  </node>
+
+  <!-- Puente UDP -> /yolo/detection -->
+  <include file="$(find yolo_bridge)/launch/udp_bridge.launch">
+    <arg name="port" value="$(arg udp_port)"/>
+  </include>
+
+  <!-- Controlador -->
+  <node pkg="yolo_bridge" type="follow_avoid_controller.py" name="follow_avoid"
+        output="screen" required="true">
+    <rosparam command="load" file="$(find yolo_bridge)/config/follow_avoid.yaml"/>
+    <param name="d_target" value="$(arg d_target)"/>
+    <param name="d_safe"   value="$(arg d_safe)"/>
+    <param name="v_max"    value="$(arg v_max)"/>
+    <param name="w_max"    value="$(arg w_max)"/>
+    <remap from="detection" to="/yolo/detection"/>
+    <remap if="$(arg dry_run)"     from="cmd_vel" to="/cmd_vel_dry"/>
+    <remap unless="$(arg dry_run)" from="cmd_vel" to="/RosAria/cmd_vel"/>
+  </node>
+</launch>

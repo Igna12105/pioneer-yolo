@@ -1,0 +1,41 @@
+# Primero se construye la imagen base (run_container.sh lo hace solo):
+#   docker compose build pioneer
+# Después esta variante con YOLOv8:
+#   docker compose -f docker-compose.yml -f docker-compose.yolo.yml build pioneer
+FROM pioneer-melodic:base
+
+SHELL ["/bin/bash", "-c"]
+ENV DEBIAN_FRONTEND=noninteractive \
+    YOLO_ENV=/opt/venvs/yolo \
+    YOLO_PYTHON=/opt/venvs/yolo/bin/python \
+    YOLO_CONFIG_DIR=/root/.config/Ultralytics
+
+# Entorno Python 3.10 aislado. NO se cambia /usr/bin/python ni el PATH:
+# las herramientas de ROS Melodic siguen usando Python 2.7 / 3.6 del sistema.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      curl bzip2 ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest \
+      | tar -xvj -C /tmp bin/micromamba \
+    && install -m 0755 /tmp/bin/micromamba /usr/local/bin/micromamba \
+    && rm -rf /tmp/bin \
+    && micromamba create -y -p "${YOLO_ENV}" -c conda-forge python=3.10 pip \
+    && micromamba clean --all --yes
+
+# torch 2.2.2 de PyPI trae CUDA 12.1 empaquetado (no hace falta CUDA en la
+# imagen): usa la GTX 1650 si el contenedor la ve (docker-compose.gpu.yml) y si
+# no, corre en CPU. requirements-yolo.txt fija todas las versiones; todas tienen
+# wheels compatibles con glibc 2.27 (Bionic), así que no se compila nada.
+COPY requirements-yolo.txt /tmp/requirements-yolo.txt
+RUN "${YOLO_ENV}/bin/python" -m pip install --no-cache-dir --upgrade pip setuptools wheel \
+    && "${YOLO_ENV}/bin/python" -m pip install --no-cache-dir --only-binary=:all: \
+       -c /tmp/requirements-yolo.txt \
+       numpy opencv-python torch torchvision ultralytics \
+    && "${YOLO_ENV}/bin/python" -c "import cv2, torch, ultralytics; print('YOLO:', ultralytics.__version__); print('Torch:', torch.__version__, 'CUDA build:', torch.version.cuda); print('OpenCV:', cv2.__version__)"
+
+# Atajo; no cambia el intérprete que usan los comandos de ROS.
+RUN printf '#!/usr/bin/env bash\nexec /opt/venvs/yolo/bin/python "$@"\n' > /usr/local/bin/yolo-python \
+    && chmod +x /usr/local/bin/yolo-python
+
+WORKDIR /root/pioneer_ws

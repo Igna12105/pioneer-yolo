@@ -1,0 +1,7 @@
+services:
+  pioneer:
+    image: pioneer-melodic:yolo
+    build:
+      context: .
+      dockerfile: Dockerfile.yolo
+    container_name: pioneer_melodic_yolo

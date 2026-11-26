@@ -1,0 +1,10 @@
+names:
+- avoid_obj
+- follow_obj
+nc: 2
+roboflow:
+  license: Private
+  project: pioneer-robot-object-detection
+  url: https://app.roboflow.com/proyecto-lab-de-robotica/pioneer-robot-object-detection/4
+  version: 4
+  workspace: proyecto-lab-de-robotica

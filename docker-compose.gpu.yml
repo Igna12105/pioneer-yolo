@@ -1,0 +1,17 @@
+# Pasa la GPU NVIDIA (GTX 1650) al contenedor. Requiere en el host:
+#   - driver NVIDIA funcionando (nvidia-smi)
+#   - nvidia-container-toolkit configurado para Docker
+# Se usa junto con la variante YOLO:
+#   ./scripts/run_container.sh --yolo --gpu
+services:
+  pioneer:
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

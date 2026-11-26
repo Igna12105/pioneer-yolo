@@ -1,0 +1,87 @@
+formula: d_m = f_px * alto_m / h_px   (h_px = alto de la caja YOLO en píxeles)
+fecha: '2026-11-20T12:04:35'
+modelo: yolo/model/best.pt
+camara: '2'
+resolucion:
+- 640
+- 480
+montada_en_robot: true
+f_px: 311.7
+f_px_desv: 13.14
+f_px_por_clase:
+  follow_obj: 302.14
+  avoid_obj: 321.91
+alto_m:
+  avoid_obj: 0.08
+  follow_obj: 0.1
+muestras:
+- clase: avoid_obj
+  d_m: 0.3
+  h_px: 86.87
+  f_px: 325.76
+  frames: 30
+  d_estimada_m: 0.287
+  error_pct: -4.3
+- clase: avoid_obj
+  d_m: 0.5
+  h_px: 51.61
+  f_px: 322.56
+  frames: 30
+  d_estimada_m: 0.483
+  error_pct: -3.4
+- clase: avoid_obj
+  d_m: 0.75
+  h_px: 33.6
+  f_px: 315.01
+  frames: 30
+  d_estimada_m: 0.742
+  error_pct: -1.0
+- clase: avoid_obj
+  d_m: 1.0
+  h_px: 25.75
+  f_px: 321.91
+  frames: 30
+  d_estimada_m: 0.968
+  error_pct: -3.2
+- clase: avoid_obj
+  d_m: 1.5
+  h_px: 17.0
+  f_px: 318.69
+  frames: 30
+  d_estimada_m: 1.467
+  error_pct: -2.2
+- clase: follow_obj
+  d_m: 0.3
+  h_px: 107.16
+  f_px: 321.47
+  frames: 30
+  d_estimada_m: 0.291
+  error_pct: -3.0
+- clase: follow_obj
+  d_m: 0.5
+  h_px: 61.51
+  f_px: 307.57
+  frames: 30
+  d_estimada_m: 0.507
+  error_pct: 1.4
+- clase: follow_obj
+  d_m: 0.75
+  h_px: 38.5
+  f_px: 288.72
+  frames: 30
+  d_estimada_m: 0.81
+  error_pct: 7.9
+- clase: follow_obj
+  d_m: 1.0
+  h_px: 29.32
+  f_px: 293.2
+  frames: 30
+  d_estimada_m: 1.063
+  error_pct: 6.3
+- clase: follow_obj
+  d_m: 1.5
+  h_px: 20.14
+  f_px: 302.14
+  frames: 30
+  d_estimada_m: 1.548
+  error_pct: 3.2
